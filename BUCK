@@ -1,10 +1,10 @@
-def merge_dicts(x, y): 
+def merge_dicts(x, y):
   z = x.copy()
   z.update(y)
   return z
 
 genrule(
-  name = 'configure', 
+  name = 'configure',
   out = 'out',
   srcs = glob([
     'README',
@@ -22,29 +22,29 @@ genrule(
     'src/glog/vlog_is_on.h.in',
     'configure',
   ]),
-  cmd = 'cp -r $SRCDIR $OUT && cd $OUT && ./configure',
+  cmd = 'cp -r $SRCDIR $OUT && cd $OUT && chmod +x ./configure && ./configure',
 )
 
 genrule(
-  name = 'config.h', 
+  name = 'config.h',
   out = 'config.h',
   cmd = 'cp $(location :configure)/src/config.h $OUT',
 )
 
 genrule(
-  name = 'logging.h', 
+  name = 'logging.h',
   out = 'logging.h',
   cmd = 'cp $(location :configure)/src/glog/logging.h $OUT',
 )
 
 genrule(
-  name = 'vlog_is_on.h', 
+  name = 'vlog_is_on.h',
   out = 'vlog_is_on.h',
   cmd = 'cp $(location :configure)/src/glog/vlog_is_on.h $OUT',
 )
 
 genrule(
-  name = 'raw_logging.h', 
+  name = 'raw_logging.h',
   out = 'raw_logging.h',
   cmd = 'cp $(location :configure)/src/glog/raw_logging.h $OUT',
 )
@@ -71,6 +71,9 @@ cxx_library(
     'src/logging.cc',
     'src/utilities.cc',
     'src/vlog_is_on.cc',
+  ],
+  exported_linker_flags = [
+    '-pthread'
   ],
   visibility = [
     'PUBLIC',
